@@ -1,0 +1,29 @@
+<table class="table table-hover">
+  <thead>
+  <tr>
+    <th scope="col">Name of Service</th>
+    <th scope="col">URL</th>
+    <th scope="col">Status</th>
+    <th scope="col">Connection last updated</th>
+    <th scope="col">Service was added</th>
+    <th scope="col">Last change was made</th>
+    <th scope="col">Update Connection</th>
+    <th scope="col">Edit</th>
+    <th scope="col">Delete</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let service of services">
+    <td>{{service.name}}</td>
+    <td>{{service.url}}</td>
+    <td>{{service.status}}</td>
+    <td>{{service.statusDate}}</td>
+    <td>{{service.creationDate}}</td>
+    <td>{{service.editDate}}</td>
+    <td><button customButton variant="primary" [loading]="loadingUpdate === service.id" (click)="updateConnection(service.id)">Update</button></td>
+    <td><button customButton variant="primary" (click)="openDialog(service)">Edit</button></td>
+    <td><button customButton variant="primary" [loading]="loadingDelete === service.id" (click)="delete(service.id)">Delete</button></td>
+  </tr>
+  </tbody>
+</table>
+<button customButton variant="primary" (click)="openDialog()">Add Service</button>
