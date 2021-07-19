@@ -46,15 +46,6 @@ export class PollerComponent implements OnInit {
   }
 
 
-  delete(serviceId: string) {
-    this.loadingDelete = serviceId
-    this.pollerService.delete(serviceId).then(r => {
-      this.services = this.services.filter(service => service.id !== serviceId)
-    }).catch(() => this.notificationService.showError('Something went wrong. Was not able to delete the service.')).finally(() => {
-      this.loadingUpdate = ''
-    })
-  }
-
   openDialog(serviceModel?: ServiceModel): void {
     const dialogRef = this.matDialog.open(ServiceDialogComponent, {
       width: '500px',
@@ -63,22 +54,34 @@ export class PollerComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe((service) => {
-      if (serviceModel) {
-        this.title = 'Edit Service'
-        this.pollerService.edit(serviceModel.id, service.name, service.url).then((service) => {
-          const index = this.services.findIndex(service => service.id === serviceModel.id)
-          this.services[index] = service
-        })
+      if (!service) {
+        return
       } else {
-        this.title = 'Add Service'
-        this.pollerService.create(service.name, service.url).then((service) => {
-          this.services.push(service)
-        }).catch(() =>
-          this.notificationService.showError('Something went wrong. Was not able to add the service.')
-        )
+        if (serviceModel) {
+          this.title = 'Edit Service'
+          this.pollerService.edit(serviceModel.id, service.name, service.url).then((service) => {
+            const index = this.services.findIndex(service => service.id === serviceModel.id)
+            this.services[index] = service
+          })
+        } else {
+          this.title = 'Add Service'
+          this.pollerService.create(service.name, service.url).then((service) => {
+            this.services.push(service)
+          }).catch(() =>
+            this.notificationService.showError('Something went wrong. Was not able to add the service.')
+          )
+        }
       }
+    })
+  }
 
-    });
+  delete(serviceId: string) {
+    this.loadingDelete = serviceId
+    this.pollerService.delete(serviceId).then(r => {
+      this.services = this.services.filter(service => service.id !== serviceId)
+    }).catch(() => this.notificationService.showError('Something went wrong. Was not able to delete the service.')).finally(() => {
+      this.loadingUpdate = ''
+    })
   }
 
 }
